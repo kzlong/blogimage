@@ -1,0 +1,11 @@
+payload:
+  - 'pcbeta.com'
+  - 'lanzoum.com'
+  - 'teambition.net'
+  - 'teambition.com'
+  - 'wuyou.net'
+  - 'zhibo8.cc'
+  - 'wnflb2023.com'
+  - 'wnflb23.com'
+  - 'wnflb99.com'
+  - 'tophub.today'
