@@ -1,0 +1,7 @@
+payload:
+  - "+.wnflb2023.com"
+  - "+.bbki288.top"
+  - "+.pttime.org"
+  - "+.zhibo8.cc"
+  - "+.aliyundrive.com"
+  - "+.youku.com"
