@@ -44,7 +44,7 @@
     { "tag": "🎯 全球直连", "type": "selector", "outbounds": [ "DIRECT" ] },
     { "tag": "REJECT", "type": "block" },
     { "tag": "DIRECT", "type": "direct" },
-    { "tag": "GLOBAL", "type": "selector", "outbounds": [ "DIRECT", "REJECT", "*" },
+    { "tag": "GLOBAL", "type": "selector", "outbounds": [ "DIRECT", "REJECT", "*" ] },
     { "tag": "dns-out", "type": "dns" },
   ],
   "outbound_providers": [
