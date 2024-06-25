@@ -45,7 +45,7 @@
     { "tag": "🎯 全球直连", "type": "selector", "outbounds": [ "DIRECT" ] },
     { "tag": "REJECT", "type": "block" },
     { "tag": "DIRECT", "type": "direct" },
-    { "tag": "GLOBAL", "type": "selector", "outbounds": [ "DIRECT", "REJECT", "🇭🇰 香港节点", "🇹🇼 台湾节点", "🇯🇵 日本节点", "🇰🇷 韩国节点", "🇸🇬 新加坡节点", "🇺🇸 美国节点" ] },
+    { "tag": "GLOBAL", "type": "selector", "outbounds": [ "DIRECT", "REJECT", "🇭🇰 香港节点",  "🇹🇼 台湾节点", "🇯🇵 日本节点", "🇰🇷 韩国节点", "🇸🇬 新加坡节点", "🇺🇸 美国节点" ] },
     { "tag": "dns-out", "type": "dns" },
     { "tag": "🇭🇰 香港节点", "type": "urltest", "tolerance": 50, "use_all_providers": true, "includes": [ "🇭🇰" ] },
     { "tag": "🇹🇼 台湾节点", "type": "urltest", "tolerance": 50, "use_all_providers": true, "includes": [ "🇹🇼" ] },
@@ -53,20 +53,6 @@
     { "tag": "🇰🇷 韩国节点", "type": "urltest", "tolerance": 50, "use_all_providers": true, "includes": [ "🇰🇷" ] },
     { "tag": "🇸🇬 新加坡节点", "type": "urltest", "tolerance": 50, "use_all_providers": true, "includes": [ "🇸🇬" ] },
     { "tag": "🇺🇸 美国节点", "type": "urltest", "tolerance": 50, "use_all_providers": true, "includes": [ "🇺🇸" ] }
-  ],
-  "outbound_providers": [
-    {
-      "tag": "🛫 我的机场",
-      "type": "remote",
-      // 修改为你的 Clash 订阅链接
-      "download_url": "http://sub1.efshop.cc/api/v1/client/subscribe?token=8fcdf47fc490ed021ffeb520fdea7048&flag=clash",
-      "path": "./airport.yaml",
-      "download_interval": "24h",
-      "download_ua": "clash.meta",
-      "includes": [ "🇭🇰|🇹🇼|🇯🇵|🇰🇷|🇸🇬|🇺🇸" ],
-      "healthcheck_url": "https://www.gstatic.com/generate_204",
-      "healthcheck_interval": "10m"
-    }
   ],
   "route": {
     "rules": [
