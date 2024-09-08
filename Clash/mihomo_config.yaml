@@ -1,0 +1,321 @@
+port: 7890              # http(s) 代理端口
+socks-port: 7891        # socks4/4a/5 代理端口
+mixed-port: 7892        # 混合端口 同时支持 HTTP(S) 和 SOCKS5 协议
+redir-port: 7893        # redirect 透明代理端口,仅能代理 TCP 流量
+tproxy-port: 7894       # tproxy 透明代理端口,可代理 TCP 与 UDP 流量
+mode: rule              # 运行模式 rule / global / direct ,Clash Meta 暂不支持 script
+log-level: silent       # 日志级别 silent / error / warning / info / debug
+allow-lan: false        # 允许局域网连接 false / true
+ipv6: false             # IPv6 是否允许内核接受 IPv6 流量
+tcp-concurrent: true    # TCP 并发 如果域名解析结果对应多个IP,并发请求所有IP,选择握手最快的IP进行通讯
+keep-alive-interval: 1800 # TCP Keep Alive 间隔,单位分钟 | 控制 Clash 发出 TCP Keep Alive 包的间隔,减少移动设备耗电问题的临时措施
+unified-delay: true     # 统一延迟
+
+
+geodata-mode: true                  # GEOIP 数据模式,更改 geoip 使用文件,mmdb 或者 dat,可选,true 为 dat
+geosite-matcher: succinct          
+geodata-loader: memconservative     # GEO 文件加载模式 standard / memconservative
+geo-auto-update: false              # 自动更新 GEO 是否启用,可选 true/false
+geo-update-interval: 24             # 更新间隔,单位小时
+geox-url:                           # 自定 GEO 下载地址
+  geoip: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
+  geosite: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  mmdb: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.metadb"
+
+global-client-fingerprint: chrome   # 全局客户端指纹
+external-controller: 0.0.0.0:9090   # API 监听地址
+secret: ""                          # API 的访问密钥
+
+#################### 缓存 ####################
+profile:
+  store-selected: true              # 储存 API 对策略组的选择,以供下次启动时使用
+  store-fake-ip: true               # fake-ip 缓存,域名再次发生连接时,使用原有映射地址
+
+#################### NTP ####################
+ntp:
+  enable: false                     # 是否启用 NTP 服务
+  write-to-system: true             # 是否同步至系统时间,需要 root、管理员模式运行
+  server: "ntp.tencent.com"         # NTP 服务地址
+  port: 123                         # NTP 服务端口,默认 123
+  interval: 60                      # 同步时间间隔,单位（分）,默认同步间隔为 30 分
+
+#################### 域名嗅探 ####################
+sniffer:
+  enable: true                      # 是否启用,可选 true/false
+  sniff:
+    QUIC:
+      ports: [443, 8443]
+    TLS:                            # TLS 默认如果不配置 ports 默认嗅探 443
+      ports: [443, 8443]
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true    # 可覆盖 sniffer.override-destination
+  force-domain:
+    - "+.v2ex.com"
+  skip-domain:                      # 需要跳过嗅探的域名,主要解决部分站点sni字段非域名,导致嗅探结果异常的问题,如米家设备
+    - "Mijia Cloud"
+
+#################### TUN ####################
+tun:
+  enable: false                     # 是否启用,可选 true/false
+  stack: system                     # tun 模式堆栈 system / gvisor / mixed
+  auto-route: true                  # 自动设置全局路由,可以自动将全局流量路由进入 tun 网卡
+  auto-detect-interface: true       # 自动选择流量出口接口,多出口网卡同时连接的设备建议手动指定出口网卡
+  dns-hijack:                       # 需要劫持的 DNS
+    - "any:53"
+    - "tcp://any:53"
+    
+#################### DNS ####################
+dns:
+  enable: true                      # 关闭将使用系统 DNS
+  listen: 127.0.0.1:8853            # 开启 DNS 服务器监听
+  ipv6: true                        # false 将返回 AAAA 的空结果
+  ipv6-timeout: 300                 # 单位：ms,内部双栈并发时,向上游查询 AAAA 时,等待 AAAA 的时间,默认 100ms
+  enhanced-mode: fake-ip            # mihomo 的 DNS 处理模式 redir-host / fake-ip
+  fake-ip-range: 28.0.0.1/8         # fakeip 下的 IP 段设置 198.18.0.1/16 28.0.0.1/8
+  fake-ip-filter:                   # fakeip 过滤,以下地址不会下发 fakeip 映射用于连接
+    - "*"
+    - "+.lan"
+    - "+.invalid.*"
+    - "+.localhost"
+    - "+.local.*"
+    - "+.time.*"
+    - "+.ntp.*"
+    - "+.time.edu.cn"
+    - "+.ntp.org.cn"
+    - "+.pool.ntp.org"
+    - "+.qpic.cn"
+    - "localhost.ptlogin2.qq.com"
+    - "localhost.sec.qq.com"
+    - "dns.msftncsi.com"
+    - "www.msftncsi.com"
+    - "www.msftconnecttest.com"
+    - "time1.cloud.tencent.com"
+  default-nameserver:               # 用于解析 nameserver,fallback 以及其他DNS服务器配置的,DNS 服务域名,只能使用纯 IP 地址,可使用加密的IP DNS
+    - 114.114.114.114               # 国内移动、电信和联通通用的DNS IPv4
+    - 8.8.8.8                       # google IPv4
+    - 1.1.1.1                       # Cloudflare IPv4
+    - 223.5.5.5                     # Alibaba IPv4
+  nameserver-policy:                # 使用指定的 DNS 服务器,优先于 nameserver/fallback 查询
+    "geosite:private,cn":
+    - "https://doh.pub/dns-query"           #阿里云公共DNS
+    - "https://dns.alidns.com/dns-query"    #腾讯DNS
+    - "https://doh.360.cn/dns-query"        # 360安全DNS
+  nameserver:                               # 默认域名解析服务器,如不配置 fallback/proxy-server-nameserver , 则所有域名都由 nameserver 解析
+    - "https://1.1.1.1/dns-query"           # Cloudflare IPv4 DoH
+    - "https://1.0.0.1/dns-query"           # Cloudflare IPv4 DoH
+    - "https://doh.pub/dns-query"           #阿里云公共DNS
+    - "https://dns.alidns.com/dns-query"    #腾讯DNS
+    - "https://doh.360.cn/dns-query"        # 360安全DNS
+  proxy-server-nameserver:                  # 仅用于解析代理节点的域名,配置服务器若查询失败将使用 nameserver,非并发查询
+    - "https://1.1.1.1/dns-query"           # Cloudflare IPv4 DoH
+    - "https://1.0.0.1/dns-query"           # Cloudflare IPv4 DoH
+    - "https://doh.pub/dns-query"           #阿里云公共DNS
+    - "https://dns.alidns.com/dns-query"    #腾讯DNS
+    - "https://doh.360.cn/dns-query"        # 360安全DNS
+
+#################### 锚点配置 ####################   
+proxy_providers: &proxy_providers           # 代理集合锚点
+  type: http                                # 必须,provider类型,可选http/file
+  health-check:                             # 延迟测试
+    enable: true                            # 是否启用,可选 true/false
+    url: http://www.gstatic.com/generate_204     # 测速网址
+    interval: 3600                          # 测试间隔,如不为0则启用定时测试,单位为秒
+    timeout: 5000                           # 测试超时时间,单位为毫秒
+    udp: true                               # 是否允许 UDP 通过代理
+    tfo: false                              # TCP 快速打开
+    mptcp: true                             # TCP 多路传输
+    skip-cert-verify: false                 # 跳过证书验证,仅适用于使用tls的协议
+    #filter: "(?i)^(?!.*(?:韩国|新加坡)).*"   #筛选只需要的节点
+    #exclude-filter: "(?i)套餐|剩余"           #排除不需要的节点
+ 
+use_all: &use_all # 策略组锚点
+   use:           #引入所有代理集合
+    # - 0.格式模板
+    - 1.CUSTER
+    - 2.CUSTER
+    
+#################### 代理集合 ####################
+  # 0.格式模板:
+  #   <<: *proxy_providers 
+  #   url: "http://1.1.1.1" (订阅地址-本地文件可忽略)
+  #   path: ./proxy_providers/subscribe3.yaml  (可灵活变更-不可冲突)
+
+proxy-providers:
+  1.CUSTER:
+    <<: *proxy_providers                     # 引用相关锚点
+    url: "https://fctahfbxlk.eastasia.cloudapp.azure.com/queue/list?token=8fcdf47fc490ed021ffeb520fdea70"
+    path: ./proxy_providers/custom_subscribe1.yaml
+    # 注意!如果您的订阅链接中带有“&”字符,请删掉.
+    
+  2.CUSTER:
+    <<: *proxy_providers                    # 引用相关锚点
+    url: "链接"
+    path: ./proxy_providers/custom_subscribe2.yaml
+    # 注意!如果您的订阅链接中带有“&”字符,请删掉.
+
+#################### 策略组 ####################
+proxy-groups:
+  - {name: Proxy, type: select, proxies: [DIRECT], <<: *use_all, icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Proxy.png}
+  - {name: OpenAI, type: select, proxies: [Proxy], exclude-filter: "(?i)套餐|剩余", <<: *use_all, icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Chatgpt.png}
+  - {name: Telegram, type: select, proxies: [Proxy], exclude-filter: "(?i)套餐|剩余",<<: *use_all, icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Telegram.png}
+  - {name: YouTube, type: select, proxies: [Proxy], exclude-filter: "(?i)套餐|剩余",<<: *use_all, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png}
+  - {name: Spotify, type: select, proxies: [Proxy,DIRECT], exclude-filter: "(?i)套餐|剩余",<<: *use_all, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png}
+  - {name: AD Block, type: select, proxies: [REJECT], icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Ad.png}
+  - {name: Final, type: select, proxies: [Proxy,DIRECT], icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Others.png}
+
+#################### 规则集合 ####################  
+rule-providers:
+
+  Reject:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"
+    path: ./ruleset/reject.yaml
+    interval: 86400
+
+  Youtube:
+    type: http
+    behavior: classical
+    url: "https://github.com/blackmatrix7/ios_rule_script/raw/master/rule/Clash/YouTube/YouTube.yaml"
+    path: ./ruleSet/YouTube.yaml
+    interval: 86400
+
+  OpenAI:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/kzlong/blogimage/main/ChatGPT.txt"
+    path: ./ruleSet/ChatGPT.yaml
+    interval: 86400
+
+  Spotify:
+    type: http
+    behavior: classical
+    url: "https://github.com/blackmatrix7/ios_rule_script/raw/master/rule/Clash/Spotify/Spotify.yaml"
+    path: ./ruleSet/Spotify.yaml
+    interval: 86400
+
+  icloud:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt"
+    path: ./ruleset/icloud.yaml
+    interval: 86400
+
+  apple:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt"
+    path: ./ruleset/apple.yaml
+    interval: 86400
+
+  google:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt"
+    path: ./ruleset/google.yaml
+    interval: 86400
+
+  proxy:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt"
+    path: ./ruleset/proxy.yaml
+    interval: 86400
+
+  direct:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt"
+    path: ./ruleset/direct.yaml
+    interval: 86400
+
+  private:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt"
+    path: ./ruleset/private.yaml
+    interval: 86400
+
+  gfw:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt"
+    path: ./ruleset/gfw.yaml
+    interval: 86400
+
+  greatfire:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/greatfire.txt"
+    path: ./ruleset/greatfire.yaml
+    interval: 86400
+
+  tld-not-cn:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt"
+    path: ./ruleset/tld-not-cn.yaml
+    interval: 86400
+
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt"
+    path: ./ruleset/telegramcidr.yaml
+    interval: 86400
+
+  cncidr:
+    type: http
+    behavior: ipcidr
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt"
+    path: ./ruleset/cncidr.yaml
+    interval: 86400
+
+  lancidr:
+    type: http
+    behavior: ipcidr
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt"
+    path: ./ruleset/lancidr.yaml
+    interval: 86400
+
+  selfdomain:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/kzlong/blogimage/main/Mydirect.txt"
+    path: ./ruleset/tld-not-cn.yaml
+    interval: 86400
+
+#################### 路由规则 ####################
+rules:
+  # Google服务
+  - DOMAIN-SUFFIX,googleapis.cn,Proxy
+  # Google静态资源
+  - DOMAIN-SUFFIX,gstatic.com,Proxy
+  # Google Play下载服务
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,Proxy
+  # Github Pages
+  - DOMAIN-SUFFIX,github.io,Proxy
+  # V2rayse节点工具
+  - DOMAIN,v2rayse.com,Proxy
+  # Loyalsoldier 规则集
+  - RULE-SET,Youtube,YouTube
+  - RULE-SET,Spotify,Spotify
+  - RULE-SET,OpenAI,OpenAI
+  - RULE-SET,selfdomain,DIRECT
+  - RULE-SET,private,DIRECT
+  - RULE-SET,Reject,AD Block
+  - RULE-SET,icloud,DIRECT
+  - RULE-SET,apple,DIRECT
+  - RULE-SET,google,Proxy
+  - RULE-SET,proxy,Proxy
+  - RULE-SET,gfw,Proxy
+  - RULE-SET,tld-not-cn,Proxy
+  - RULE-SET,direct,DIRECT
+  - RULE-SET,lancidr,DIRECT,no-resolve
+  - RULE-SET,cncidr,DIRECT,no-resolve
+  - RULE-SET,telegramcidr,Telegram,no-resolve
+  # 其他规则
+  - GEOIP,LAN,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,Final
