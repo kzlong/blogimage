@@ -288,6 +288,8 @@ rule-providers:
 
 #################### 路由规则 ####################
 rules:
+  # 1password
+  - DOMAIN-SUFFIX,1password.com,DIRECT
   # Google服务
   - DOMAIN-SUFFIX,googleapis.cn,Proxy
   # Google静态资源
@@ -297,7 +299,7 @@ rules:
   # Github Pages
   - DOMAIN-SUFFIX,github.io,Proxy
   # V2rayse节点工具
-  - DOMAIN,v2rayse.com,Proxy
+  - DOMAIN-SUFFIX,v2rayse.com,Proxy
   # Loyalsoldier 规则集
   - RULE-SET,Youtube,YouTube
   - RULE-SET,Spotify,Spotify
