@@ -1,8 +1,8 @@
 # NAME: mylist
 # DOMAIN: 6
 # TOTAL: 6
-DOMAIN,alipan.com
-DOMAIN,zhibo8.cc
-DOMAIN,pttime.org
-DOMAIN,00shu.la
-DOMAIN,wnflb2023.com
+DOMAIN,alipan.com,direct
+DOMAIN,zhibo8.cc,direct
+DOMAIN,pttime.org,direct
+DOMAIN,00shu.la,direct
+DOMAIN,wnflb2023.com,direct
