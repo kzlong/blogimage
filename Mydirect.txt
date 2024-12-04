@@ -5,3 +5,5 @@ payload:
   - "+.zhibo8.cc"
   - "+.aliyundrive.com"
   - "+.youku.com"
+  - "+.my.5g.device"
+  - "+.my.5g.device"
