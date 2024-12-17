@@ -153,14 +153,42 @@ proxy-providers:
     url: "链接"
     path: ./proxy_providers/custom_subscribe2.yaml
     # 注意!如果您的订阅链接中带有“&”字符,请删掉.
-
+    
+#################自建节点########################
+proxies:
+  - name: Malaysia
+    type: vmess
+    server: ******
+    port: 36292
+    uuid: **********
+    alterId: 0
+    cipher: auto
+    udp: true
+    tls: false
+    network: ws
+    servername: www.bing.com
+    ws-opts:
+       path: /b75c8fef
+       headers:
+         Host: www.bing.com
+         
+  - name: Malaysia-hy2
+    type: hysteria2
+    server: *********
+    port: 443
+    up: 30 Mbps
+    down: 200 Mbps
+    password: ********
+    sni: bing.com
+    skip-cert-verify: true
+    
 #################### 策略组 ####################
 proxy-groups:
-  - {name: Proxy, type: select, proxies: [DIRECT], <<: *use_all, icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Proxy.png}
-  - {name: OpenAI, type: select, proxies: [Proxy], exclude-filter: "(?i)套餐|剩余", <<: *use_all, icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Chatgpt.png}
-  - {name: Telegram, type: select, proxies: [Proxy], exclude-filter: "(?i)套餐|剩余",<<: *use_all, icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Telegram.png}
-  - {name: YouTube, type: select, proxies: [Proxy], exclude-filter: "(?i)套餐|剩余",<<: *use_all, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png}
-  - {name: Spotify, type: select, proxies: [Proxy,DIRECT], exclude-filter: "(?i)套餐|剩余",<<: *use_all, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png}
+  - {name: Proxy, type: select, proxies: [DIRECT,Malaysia,Malaysia-hy2], <<: *use_all, icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Proxy.png}
+  - {name: OpenAI, type: select, proxies: [Proxy,Malaysia,Malaysia-hy2], exclude-filter: "(?i)套餐|剩余", <<: *use_all, icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Chatgpt.png}
+  - {name: Telegram, type: select, proxies: [Proxy,Malaysia,Malaysia-hy2], exclude-filter: "(?i)套餐|剩余",<<: *use_all, icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Telegram.png}
+  - {name: YouTube, type: select, proxies: [Proxy,Malaysia,Malaysia-hy2], exclude-filter: "(?i)套餐|剩余",<<: *use_all, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png}
+  - {name: Spotify, type: select, proxies: [Proxy,DIRECT,Malaysia,Malaysia-hy2], exclude-filter: "(?i)套餐|剩余",<<: *use_all, icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png}
   - {name: AD Block, type: select, proxies: [REJECT], icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Ad.png}
   - {name: Final, type: select, proxies: [Proxy,DIRECT], icon: https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Others.png}
 
