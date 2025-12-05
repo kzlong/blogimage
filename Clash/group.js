@@ -278,7 +278,7 @@ function main(config) {
       "name": "AI",
       "type": "select",
       "proxies": ["Proxy"],
-	  "exclude-filter": "距离|套餐|官网",
+	  "exclude-filter": "剩余|套餐|官网",
       "include-all": true,
       "icon": "https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/AI.png"
     }, 
@@ -287,7 +287,7 @@ function main(config) {
       "name": "Telegram",
       "type": "select",
       "proxies": ["Proxy"],
-	  "exclude-filter": "距离|套餐|官网",
+	  "exclude-filter": "剩余|套餐|官网",
       "include-all": true,
       "icon": "https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Telegram.png"
     },
@@ -296,7 +296,7 @@ function main(config) {
       "name": "YouTube",
       "type": "select",
       "proxies": ["Proxy"],
-	  "exclude-filter": "距离|套餐|官网",
+	  "exclude-filter": "剩余|套餐|官网",
       "include-all": true,
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/youtube.svg"
     },
