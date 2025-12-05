@@ -1,3 +1,33 @@
+// ============================
+//  自建节点列表（你可以继续添加）
+// ============================
+const myProxies = [
+  {
+    name: "🇺🇸 DMIT",
+    type: "vless",
+    server: "sui.12345.xyz",
+    port: 443,
+    uuid: "47de5ae1-c3cb-4e0e-e22c-0febb72a20a44",
+    tls: true,
+    flow: "xtls-rprx-vision",
+    network: "tcp",
+    "client-fingerprint": "chrome",
+    "skip-cert-verify": false,
+    servername: "caseend.com",
+    "reality-opts": {
+      "public-key": "33FksSAuee7xUn415VoyJmh0qFkyZEzZ6PwhuMaJjpms",
+      "short-id": "5893aed1"
+    },
+    "grpc-opts": {},
+    "ws-opts": {},
+    "http-opts": {}
+  }
+];
+// ============================
+//  需要自动加入的分组名称
+// ============================
+const targetGroups = ["蓝胖云LanPangYun"];
+
 // 国内DNS服务器
 const domesticNameservers = [
   "https://dns.alidns.com/dns-query", // 阿里云公共DNS
@@ -169,7 +199,8 @@ const ruleProviders = {
 // 规则
 const rules = [
   // 自定义规则
-  "DOMAIN-SUFFIX,cn.bing.com,DIRECT",
+  "DOMAIN-SUFFIX,ch.feiyue.lol,Emby",
+  "DOMAIN-SUFFIX,lite.liminalnet.com,Emby",	
   "DOMAIN-SUFFIX,www.pttime.org,Proxy",
   "DOMAIN-SUFFIX,suzhi.fun,DIRECT",
   "DOMAIN-SUFFIX,i.imgur.com,AI",
@@ -219,12 +250,15 @@ const groupBaseOption = {
 
 // 程序入口
 function main(config) {
-  const proxyCount = config?.proxies?.length ?? 0;
-  const proxyProviderCount =
-    typeof config?.["proxy-providers"] === "object" ? Object.keys(config["proxy-providers"]).length : 0;
-  if (proxyCount === 0 && proxyProviderCount === 0) {
-    throw new Error("配置文件中未找到任何代理");
-  }
+  // 1) 向订阅添加自建节点
+  config.proxies.push(...myProxies);
+
+  // 2) 将自建节点自动加入指定分组
+  config["proxy-groups"].forEach(group => {
+    if (targetGroups.includes(group.name)) {
+      group.proxies = group.proxies.concat(myProxies.map(p => p.name));
+    }
+  });
 
   // 覆盖原配置中DNS配置
   config["dns"] = dnsConfig;
@@ -238,15 +272,15 @@ function main(config) {
       "include-all": true,
       "icon": "https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Proxy.png"
     },
-    {
+	{
       ...groupBaseOption,
-      "name": "YouTube",
+      "name": "AI",
       "type": "select",
       "proxies": ["Proxy"],
 	    "exclude-filter": "剩余|套餐",
       "include-all": true,
-      "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/youtube.svg"
-    },
+      "icon": "https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/AI.png"
+    }, 
     {
       ...groupBaseOption,
       "name": "Telegram",
@@ -256,15 +290,24 @@ function main(config) {
       "include-all": true,
       "icon": "https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Telegram.png"
     },
-    {
+	  {
       ...groupBaseOption,
-      "name": "AI",
+      "name": "YouTube",
       "type": "select",
       "proxies": ["Proxy"],
 	    "exclude-filter": "剩余|套餐",
       "include-all": true,
-      "icon": "https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/AI.png"
-    },  
+      "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/youtube.svg"
+    },
+	  {
+      ...groupBaseOption,
+      "name": "Emby",
+      "type": "select",
+      "proxies": ["Proxy"],
+	    "exclude-filter": "剩余|套餐",
+      "include-all": true,
+      "icon": "https://raw.githubusercontent.com/kzlong/blogimage/main/QuantumultX/Emby.png"
+    },
     {
       ...groupBaseOption,
       "name": "AD Block",
